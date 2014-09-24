@@ -6,6 +6,7 @@ using System.Reactive.Subjects;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Contract;
 using Microsoft.AspNet.SignalR.Client;
@@ -16,58 +17,65 @@ namespace Client
     {
         static void Main(string[] args)
         {
-            // Create the connection
-            var connection = new HubConnection("http://localhost:8000/signalr");
-
-            // Create the hubproxy
-            var hubProxy = connection.CreateHubProxy<IServerHub, IClientEvent>("MyHub");
-//            connection.AsObservable<object>().Subscribe(s =>
-//            {
-//                Console.WriteLine(s);
-//            });
-
-            // Subscribe on the event IChatEvents.NewMessage.
-            // When the event was fired through the server, the static method Client.NewMessage(string msg) will be invoked.
-            //hubProxy.SubscribeOn<string,string>(hub => hub.AddMessage, AddMessage);
-
-            connection.Start().Wait();
-            var clientHandler = new ClientHandler(hubProxy);
-//            hubProxy.SubscribeOnAll(clientHandler);
             
-            var sub = clientHandler.Subscribe(msg => Console.WriteLine("{0} > {1}", msg.User, msg.User));
-
-            // Start the connection
-            
-
-            // Call the method IChatHub.GetConnectedClients() on the server and get the result.
-//            int clientCount = hubProxy.Call(hub => hub.GetConnectedClients());
-//            Console.WriteLine("Connected clients: {0}", clientCount);
-//
-//            // Call the method IChatHub.SendMessage with no result.
-//            hubProxy.Call(hub => hub.SendMessage("Hi, i'm the client."));
+            var clientHandler = new ClientHandler();
+            Console.WriteLine("Two subscriptions are now pumping out messages");
+            var sub1 = clientHandler.Subscribe(msg => Console.WriteLine("Sub1 {0} > {1}", msg.User, msg.Message), err => Console.WriteLine(err));
+            var sub2 = clientHandler.Subscribe(msg => Console.WriteLine("Sub2 {0} > {1}", msg.User, msg.Message), err => Console.WriteLine(err));
+           
+            Console.WriteLine("Press any key to disconnect Sub 1");
             Console.ReadKey();
-            sub.Dispose();
-            connection.Stop();
+            sub1.Dispose();
+
+            Console.WriteLine("Press any key to disconnect Sub 2");
+            Console.ReadKey();
+            sub2.Dispose();
+
+            Console.WriteLine("Observable disconnected, connection to server should still be open and we notified it that we want to unsubscribe message listener");
+            Console.WriteLine("Press any key to shut down the app and close connection to server");
+            Console.ReadKey();
+            clientHandler.Dispose();
         }
 
-        public class ClientHandler : IObservable<ClientMessage>
+        public class ClientHandler : IObservable<ClientMessage>, IDisposable
         {
-            private readonly ITypedHubProxy<IServerHub, IClientEvent> _server;
+//            private readonly ITypedHubProxy<IServerHub, IClientEvent> _server;
             private readonly IObservable<ClientMessage> _clientObservable;
-            public ClientHandler(ITypedHubProxy<IServerHub, IClientEvent> server)
+
+            HubConnection connection = new HubConnection("http://localhost:8000/signalr");
+
+            ITypedHubProxy<IServerHub, IClientEvent> server;
+            
+            public ClientHandler()
             {
-                _server = server;
-                _clientObservable = Observable.Create<ClientMessage>(o =>
+                server = connection.CreateHubProxy<IServerHub, IClientEvent>("MyHub");
+                _clientObservable = Observable.Create<ClientMessage>(async o =>
                 {
-                    _server.Call(hub => hub.AddMsg(typeof(ClientMessage).Name));
-                    _server.SubscribeOn<string, string>(hub => hub.AddMessage, (name, message) => o.OnNext(new ClientMessage() { Message = message, User = name }));
-                    return () => _server.Call(hub => hub.RemoveMsg("Test"));
+                    
+                    if (connection.State != ConnectionState.Connected)
+                        await connection.Start();
+                    server.Call(hub => hub.AddMsg(typeof(ClientMessage).Name));
+                    server.SubscribeOn<string, string>(hub => hub.AddMessage, (name, message) => o.OnNext(new ClientMessage() { Message = message, User = name }));
+                    return async () => await server.CallAsync(hub => hub.RemoveMsg((typeof (ClientMessage).Name)))
+                            .ContinueWith(removalTask =>
+                            {
+                                if (removalTask.IsFaulted)
+                                    Console.WriteLine(removalTask.Exception);
+                            });
                 }).Publish().RefCount();
             }
 
             public IDisposable Subscribe(IObserver<ClientMessage> observer)
             {
                return  _clientObservable.Subscribe(observer);
+            }
+
+            public void Dispose()
+            {
+                
+                connection.Stop();
+                connection.Dispose();
+                
             }
         }
 
