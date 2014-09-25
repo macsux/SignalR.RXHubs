@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace Contract
 {
-    public interface IServerHub
+    public interface IServerHub : IHubSupportsObservables
     {
-        void Send(string name, string message);
-        void AddMsg(string msgType);
-        void RemoveMsg(string msgType);
+        void Send(ClientMessage message);
+        Guid MsgSubscribe();
+        
+    }
+
+    public interface IHubSupportsObservables
+    {
+        void Unsubscribe(Guid observableId);
     }
 }

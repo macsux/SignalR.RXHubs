@@ -35,10 +35,10 @@
             var chat = $.connection.myHub;
 
             // Create a function that the hub can call to broadcast messages.
-            chat.client.addMessage = function (name, message) {
+            chat.client.addMessage = function (message) {
                 // Html encode display name and message.
-                var encodedName = $('<div />').text(name).html();
-                var encodedMsg = $('<div />').text(message).html();
+                var encodedName = $('<div />').text(message.User).html();
+                var encodedMsg = $('<div />').text(message.Message).html();
                 // Add the message to the page.
                 $('#discussion').append('<li><strong>' + encodedName
                     + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
@@ -51,7 +51,7 @@
             $.connection.hub.start().done(function () {
                 $('#sendmessage').click(function () {
                     // Call the Send method on the hub.
-                    chat.server.send($('#displayname').val(), $('#message').val());
+                    chat.server.send({ User: $('#displayname').val(), Message: $('#message').val() });
                     // Clear text box and reset focus for next comment.
                     $('#message').val('').focus();
                 });
