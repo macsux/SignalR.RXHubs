@@ -41,6 +41,7 @@ namespace SignalRSelfHost
 
     public class MyHub : Hub<IClient>, IServerHub
     {
+        // typle is connectionID & guid that was given to client that maps subscription disposable
         private static readonly ConcurrentDictionary<Tuple<string, Guid>, IDisposable> subscriptions =
             new ConcurrentDictionary<Tuple<string, Guid>, IDisposable>();
 
@@ -102,12 +103,12 @@ namespace SignalRSelfHost
             var hub = (IHub) this;
             Action<T> onNext =
                 param =>
-                    Dynamic.InvokeMemberAction(hub.Clients.Caller, string.Format("{0}-{1}", observableId, "OnNext"),
-                        param);
+                    Dynamic.InvokeMemberAction(hub.Clients.Caller, string.Format("{0}-{1}", observableId, "OnNext"), 
+                    param);
             Action<Exception> onError =
                 exception =>
-                    Dynamic.InvokeMemberAction(hub.Clients.Caller, string.Format("{0}-{1}", observableId, "OnError"),
-                        new Error(exception));
+                    Dynamic.InvokeMemberAction(hub.Clients.Caller, string.Format("{0}-{1}", observableId, "OnError"), 
+                    new Error(exception));
             Action onComplete =
                 () =>
                     Dynamic.InvokeMemberAction(hub.Clients.Caller, string.Format("{0}-{1}", observableId, "OnComplete"));

@@ -17,7 +17,7 @@ namespace Client
             _hubName = hubName;
             _connection = new HubConnection(serverSignalRUrl);
             _typedProxy = _connection.CreateHubProxy<IServerHub, IClient>(hubName);
-            _clientObservable = _connection.HubSubscriptionAsObservable<ClientMessage, IServerHub>(_hubName, hub => hub.MsgSubscribe());
+            _clientObservable = _connection.HubSubscriptionAsObservable<ClientMessage, IServerHub>(_hubName, hub => hub.MsgSubscribe(), ConnectionLostBehavior.Error);
             
         }
 
@@ -38,7 +38,8 @@ namespace Client
 
             // THIS VERSION WILL ALLOW EACH SUBSCRIBER TO GET IT'S OWN UNIQUE SUBSCRIPTION ON THE SERVER
             // THE ONLY REASON TO WANT TO DO THIS IS TO SETUP SUBSCRIPTIONS WITH DIFFERENT PARAMETERS ON SERVER (pass value into MsgSubscribe)
-            return _connection.HubSubscriptionAsObservable<ClientMessage, IServerHub>(_hubName, hub => hub.MsgSubscribe()).Subscribe(observer);
+            
+            //return _connection.HubSubscriptionAsObservable<ClientMessage, IServerHub>(_hubName, hub => hub.MsgSubscribe()).Subscribe(observer);
         }
 
         // can send messages to server

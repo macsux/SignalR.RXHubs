@@ -17,11 +17,13 @@ namespace Client
         {
             
             var clientProxy = new ClientProxy("http://localhost:8000", "MyHub");
-            clientProxy.Connect();
+            
             Console.WriteLine("Two subscriptions are now pumping out messages");
             var sub1 = clientProxy.Subscribe(msg => Console.WriteLine("Sub1 {0} > {1}", msg.User, msg.Message), Console.WriteLine, () => Console.WriteLine("Sub1 Sequence ended"));
             var sub2 = clientProxy.Subscribe(msg => Console.WriteLine("Sub2 {0} > {1}", msg.User, msg.Message), Console.WriteLine, () => Console.WriteLine("Sub2 Sequence ended"));
-           
+            Console.ReadLine();
+            clientProxy.Connect();
+
             clientProxy.Add("userA", "hi");
             Console.WriteLine("Press any key to disconnect Sub 1");
             Console.ReadKey();
