@@ -20,7 +20,8 @@ namespace Client
         {
              
         }
-        public static IObservable<TMessage> HubSubscriptionAsObservable<TMessage, THub>(this HubConnection connection, string hubName, Expression<Func<THub, Guid>> serverSubscribeMethod, ConnectionLostBehavior behavior) where THub : class, IHubSupportsObservables
+
+        public static IObservable<TMessage> HubSubscriptionAsObservable<TMessage, THub>(this HubConnection connection, string hubName, Expression<Func<THub, IObservable<TMessage>>> serverSubscribeMethod, ConnectionLostBehavior behavior) where THub : class, IHubSupportsObservables
         {
             IObservable<TMessage> clientObservable = Observable.Create<TMessage>(async observer =>
             {
@@ -85,7 +86,7 @@ namespace Client
             return clientObservable;
         }
 
-        private static async Task<Guid> AddSubscription<TMessage, THub>(HubConnection connection,  string hubName, Expression<Func<THub, Guid>> serverSubscribeMethod, IObserver<TMessage> observer) where THub : class
+        private static async Task<Guid> AddSubscription<TMessage, THub>(HubConnection connection,  string hubName, Expression<Func<THub, IObservable<TMessage>>> serverSubscribeMethod, IObserver<TMessage> observer) where THub : class
         {
 
             var typedProxy = connection.CreateHubProxy<THub, IDummy>(hubName);
@@ -93,7 +94,8 @@ namespace Client
             //                if (connection.State != ConnectionState.Connected)
             //                    await connection.Start();
 
-            var observableId = await typedProxy.CallAsync(serverSubscribeMethod);
+            var observableId = await proxy.Invoke<Guid>(((MethodCallExpression)serverSubscribeMethod.Body).Method.Name);
+            //var observableId = await typedProxy.CallAsync(serverSubscribeMethod);
 
             string onNextMessageName = string.Format("{0}-{1}", observableId, "OnNext");
             string onErrorMessageName = string.Format("{0}-{1}", observableId, "OnError");
@@ -107,13 +109,13 @@ namespace Client
         private static IHubProxy GetHubProxy(this HubConnection hubConnection, string hubName)
         {
             FieldInfo field = hubConnection.GetType().GetField("_hubs", BindingFlags.Instance | BindingFlags.NonPublic);
-            if (field == (FieldInfo)null)
+            if (field == null)
                 throw new ConstraintException("Couldn't find \"_hubs\" field inside of the HubConnection.");
-            var dictionary = (Dictionary<string, HubProxy>)field.GetValue((object)hubConnection);
+            var dictionary = (Dictionary<string, HubProxy>)field.GetValue(hubConnection);
             if (dictionary.ContainsKey(hubName))
-                return (IHubProxy)dictionary[hubName];
+                return dictionary[hubName];
             else
-                return (IHubProxy)null;
+                return null;
         }
     }
 

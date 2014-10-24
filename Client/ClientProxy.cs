@@ -17,6 +17,8 @@ namespace Client
             _hubName = hubName;
             _connection = new HubConnection(serverSignalRUrl);
             _typedProxy = _connection.CreateHubProxy<IServerHub, IClient>(hubName);
+            var proxy = _connection.CreateHubProxy(hubName);
+            
             _clientObservable = _connection.HubSubscriptionAsObservable<ClientMessage, IServerHub>(_hubName, hub => hub.MsgSubscribe(), ConnectionLostBehavior.Error);
             
         }
