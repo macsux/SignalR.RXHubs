@@ -39,10 +39,7 @@ namespace SignalRSelfHost
             
             else
             {
-                invocation.ReturnValue =
-                    _implementation.GetType()
-                        .GetMethod(invocation.Method.Name)
-                        .Invoke(_implementation, invocation.Arguments);    
+                invocation.ReturnValue = _implementation.GetType().GetMethod(invocation.Method.Name).Invoke(_implementation, invocation.Arguments);    
             }
         }
     }

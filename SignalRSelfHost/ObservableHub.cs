@@ -65,27 +65,6 @@ namespace SignalRSelfHost
                 });
         }
         
-        public static Type GeneratePrivateHubTypeForInterface(ProxyGenerator generator)
-        {
-            var publicHubInterface = typeof (T);
-            TypeBuilder typeBuilder = generator.ProxyBuilder.ModuleScope.DefineType(false, publicHubInterface.Name, TypeAttributes.Public | TypeAttributes.Abstract | TypeAttributes.Interface);
-            typeBuilder.AddInterfaceImplementation(typeof(IHub));
-            foreach (var method in publicHubInterface.GetMethods())
-            {
-                var returnType = method.ReturnType;
-                if (method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(IObservable<>))
-                {
-                    returnType = typeof(Guid);
-                }
-                typeBuilder.DefineMethod(method.Name, method.Attributes, returnType,
-                    method.GetParameters().Select(x => x.ParameterType).ToArray());
-            }
-            var unsubscribeMethod = typeof(ObservableHub<>).GetMethod("Unsubscribe");
-            typeBuilder.DefineMethod(unsubscribeMethod.Name, MethodAttributes.Abstract | MethodAttributes.Public | MethodAttributes.Virtual, unsubscribeMethod.ReturnType,
-                unsubscribeMethod.GetParameters().Select(x => x.ParameterType).ToArray());
-
-            var realHubInterfaceType = typeBuilder.CreateType();
-            return realHubInterfaceType;
-        }
+        
     }
 }

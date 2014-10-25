@@ -13,8 +13,11 @@ namespace SignalRSelfHost
     {
         public static void RegisterHubs(this ContainerBuilder builder, params Assembly[] controllerAssemblies)
         {
-            var virtualHubs = controllerAssemblies.Select(asm => asm.GetExportedTypes().Where(type => typeof (IVirtualHub).IsAssignableFrom(type)));
-            var normalHubs = controllerAssemblies.Select(asm => asm.GetExportedTypes().Where(type => typeof(IHub).IsAssignableFrom(type) && !typeof(IVirtualHub).IsAssignableFrom(type)));
+            var virtualHubs = controllerAssemblies.SelectMany(asm => asm.GetExportedTypes().Where(type => typeof (IVirtualHub).IsAssignableFrom(type)));
+            var normalHubs = controllerAssemblies.SelectMany(asm => asm.GetExportedTypes().Where(type => typeof(IHub).IsAssignableFrom(type) && !typeof(IVirtualHub).IsAssignableFrom(type)));
+            
+            builder.RegisterTypes(normalHubs.ToArray());
+
         }
     }
 }
