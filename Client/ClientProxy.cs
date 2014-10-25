@@ -5,7 +5,7 @@ using Microsoft.AspNet.SignalR.Client;
 
 namespace Client
 {
-    public class ClientProxy : IDisposable, IObservable<ClientMessage>
+    public class ClientProxy : IDisposable, IServerHub
     {
         private readonly string _hubName;
         private readonly IObservable<ClientMessage> _clientObservable;
@@ -17,10 +17,7 @@ namespace Client
             _hubName = hubName;
             _connection = new HubConnection(serverSignalRUrl);
             _typedProxy = _connection.CreateHubProxy<IServerHub, IClient>(hubName);
-            var proxy = _connection.CreateHubProxy(hubName);
-            
-            _clientObservable = _connection.HubSubscriptionAsObservable<ClientMessage, IServerHub>(_hubName, hub => hub.MsgSubscribe(), ConnectionLostBehavior.Error);
-            
+            _clientObservable = _connection.HubSubscriptionAsObservable<ClientMessage, IServerHub>(_hubName, hub => hub.GetClientMessageObservable(), ConnectionLostBehavior.Error);
         }
 
         public void Connect()
@@ -33,22 +30,19 @@ namespace Client
             _connection.Dispose();
         }
         
-        public IDisposable Subscribe(IObserver<ClientMessage> observer)
+
+        public void Send(ClientMessage message)
+        {
+            _typedProxy.Call(x => x.Send(message));
+        }
+
+        public IObservable<ClientMessage> GetClientMessageObservable()
         {
             // THIS VERSION WILL MAKE ALL SUBSCRIBERS SHARE A SINGLE SUBSCRIPTION TO SERVER
-            return _clientObservable.Subscribe(observer);
-
+            return _clientObservable;
             // THIS VERSION WILL ALLOW EACH SUBSCRIBER TO GET IT'S OWN UNIQUE SUBSCRIPTION ON THE SERVER
             // THE ONLY REASON TO WANT TO DO THIS IS TO SETUP SUBSCRIPTIONS WITH DIFFERENT PARAMETERS ON SERVER (pass value into MsgSubscribe)
-            
-            //return _connection.HubSubscriptionAsObservable<ClientMessage, IServerHub>(_hubName, hub => hub.MsgSubscribe()).Subscribe(observer);
+            return _connection.HubSubscriptionAsObservable<ClientMessage, IServerHub>(_hubName, hub => hub.GetClientMessageObservable(), ConnectionLostBehavior.Error);
         }
-
-        // can send messages to server
-        public void Add(string userName, string message)
-        {
-            _typedProxy.Call(x => x.Send(new ClientMessage(){Message=message,User=userName}));
-        }
-
     }
 }

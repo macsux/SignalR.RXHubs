@@ -89,7 +89,7 @@
   <ItemGroup>
     <Compile Include="Client.cs" />
     <Compile Include="ClientProxy.cs" />
-    <Compile Include="ClientProxyGenerator.cs" />
+    <Compile Include="ClientProxyFactory.cs" />
     <Compile Include="HubConnectionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteException.cs" />

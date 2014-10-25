@@ -7,15 +7,12 @@ using System.Threading.Tasks;
 
 namespace Contract
 {
-    public interface IServerHub : IHubSupportsObservables
+    public interface IServerHub// : IHubSupportsObservables
     {
         void Send(ClientMessage message);
-        IObservable<ClientMessage> MsgSubscribe();
+        IObservable<ClientMessage> GetClientMessageObservable();
         
     }
 
-    public interface IHubSupportsObservables
-    {
-        void Unsubscribe(Guid observableId);
-    }
+    
 }

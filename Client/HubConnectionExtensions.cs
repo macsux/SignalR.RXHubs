@@ -16,12 +16,8 @@ namespace Client
 {
     public static class HubConnectionExtensions
     {
-        private interface IDummy
-        {
-             
-        }
-
-        public static IObservable<TMessage> HubSubscriptionAsObservable<TMessage, THub>(this HubConnection connection, string hubName, Expression<Func<THub, IObservable<TMessage>>> serverSubscribeMethod, ConnectionLostBehavior behavior) where THub : class, IHubSupportsObservables
+      
+        public static IObservable<TMessage> HubSubscriptionAsObservable<TMessage, THub>(this HubConnection connection, string hubName, Expression<Func<THub, IObservable<TMessage>>> serverSubscribeMethod, ConnectionLostBehavior behavior) where THub : class
         {
             IObservable<TMessage> clientObservable = Observable.Create<TMessage>(async observer =>
             {
@@ -48,7 +44,8 @@ namespace Client
 
                 var closedObservable = Observable.FromEvent(c => connection.Closed += c, c => connection.Closed -= c);
                 
-                var typedProxy = connection.CreateHubProxy<THub, IDummy>(hubName);
+                //var typedProxy = connection.CreateHubProxy<THub, IDummy>(hubName);
+                
 
                 // if we're already connected, instantly subscribe
                 Guid observableId = Guid.Empty;
@@ -74,7 +71,8 @@ namespace Client
                     // server will do it's own cleanup
                     if (connection.State == ConnectionState.Connected && observableId != Guid.Empty)
                     {
-                        await typedProxy.CallAsync(hub => hub.Unsubscribe(observableId))
+                        var proxy = connection.GetHubProxy(hubName) ?? connection.CreateHubProxy(hubName); ;
+                        await proxy.Invoke("Unsubscribe", observableId)
                             .ContinueWith(removalTask =>
                             {
                                 if (removalTask.IsFaulted)
@@ -88,8 +86,6 @@ namespace Client
 
         private static async Task<Guid> AddSubscription<TMessage, THub>(HubConnection connection,  string hubName, Expression<Func<THub, IObservable<TMessage>>> serverSubscribeMethod, IObserver<TMessage> observer) where THub : class
         {
-
-            var typedProxy = connection.CreateHubProxy<THub, IDummy>(hubName);
             var proxy = connection.GetHubProxy(hubName) ?? connection.CreateHubProxy(hubName); ;
             //                if (connection.State != ConnectionState.Connected)
             //                    await connection.Start();

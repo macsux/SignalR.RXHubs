@@ -100,8 +100,15 @@
   <ItemGroup>
     <Compile Include="AutofacDependencyResolver.cs" />
     <Compile Include="AutofacHubDescriptorProvider.cs" />
+    <Compile Include="HubTypeExtensions.cs" />
+    <Compile Include="IHubSupportsObservables.cs" />
+    <Compile Include="IVirtualHub.cs" />
+    <Compile Include="MyHub.cs" />
+    <Compile Include="ObservableHub.cs" />
+    <Compile Include="ObservableInterceptor.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

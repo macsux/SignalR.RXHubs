@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client
+namespace SignalRSelfHost
 {
-    public class ClientHubProxy<T>
+    class HubsModule
     {
-        public T Hub { get; private set; }
-        
     }
 }
