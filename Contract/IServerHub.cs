@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Contract
 {
-    public interface IServerHub// : IHubSupportsObservables
+    public interface IServerHub : IVirtualHub //IHubSupportsObservables
     {
         void Send(ClientMessage message);
         IObservable<ClientMessage> GetClientMessageObservable();

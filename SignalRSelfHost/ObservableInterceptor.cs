@@ -5,13 +5,13 @@ using Microsoft.AspNet.SignalR.Hubs;
 
 namespace SignalRSelfHost
 {
-    public class ObservableInterceptor<T> : IInterceptor where T : class
+    public class ObservableInterceptor : IInterceptor
     {
-        private readonly ObservableHub<T> _implementation;
+        private readonly IHub _implementation;
 
-        public ObservableInterceptor(ObservableHub<T> implementation)
+        public ObservableInterceptor(IHub virtualHub)
         {
-            _implementation = implementation;
+            _implementation = virtualHub;
             
         }
 

@@ -19,21 +19,21 @@ namespace SignalRSelfHost
     {
         private Assembly[] _controllerAssemblies;
 
-        public HubsModule() : this(new[] { Assembly.GetEntryAssembly()})
-        {
-            
-        }
         public HubsModule(params Assembly[] controllerAssemblies)
         {
-            _controllerAssemblies = controllerAssemblies;
+            if(controllerAssemblies.Any())
+                _controllerAssemblies = controllerAssemblies;
+            else
+            {
+                _controllerAssemblies = new[] { Assembly.GetEntryAssembly()};
+            }
         }
 
         protected override void Load(ContainerBuilder builder)
         {
-//            var realHubInterfaceType = ObservableHub<IServerHub>.GeneratePrivateHubTypeForInterface(generator);
             builder.RegisterType<AutofacHubDescriptorProvider>().AsImplementedInterfaces();
 
-            var virtualHubTypes = _controllerAssemblies.SelectMany(asm => asm.GetExportedTypes().Where(type => typeof(IVirtualHub).IsAssignableFrom(type)));
+            var virtualHubTypes = _controllerAssemblies.SelectMany(asm => asm.GetExportedTypes().Where(type => !type.IsAbstract && typeof(IVirtualHub).IsAssignableFrom(type)));
             var normalHubTypes = _controllerAssemblies.SelectMany(asm => asm.GetExportedTypes().Where(type => typeof(IHub).IsAssignableFrom(type) && !typeof(IVirtualHub).IsAssignableFrom(type)));
             builder.RegisterTypes(normalHubTypes.ToArray());
 
@@ -41,28 +41,25 @@ namespace SignalRSelfHost
 
             foreach (var virtualHubType in virtualHubTypes)
             {
-                var realHubInterfaceType = GeneratePrivateHubTypeForInterface(generator, virtualHubType);
-                var options = new ProxyGenerationOptions() { BaseTypeForInterfaceProxy = typeof(Hub<IClient>) };
+                var virtualHubInterface =
+                    virtualHubType.GetInterfaces().Where(i => i != typeof(IVirtualHub)).FirstOrDefault(i => typeof(IVirtualHub).IsAssignableFrom(i));
+                if (virtualHubInterface == null)
+                    throw new Exception("Virtual hub must implement a contract interface which implements IVirtualHub");
+                var realHubInterfaceType = GeneratePrivateHubTypeForInterface(generator, virtualHubInterface);
+
+                var options = new ProxyGenerationOptions() { BaseTypeForInterfaceProxy = typeof(HubBase) };
+
+                Type proxyType = generator.CreateInterfaceProxyWithoutTarget(realHubInterfaceType, options, new EmptyInterceptor()).GetType();
                 var virtualHubLocal = virtualHubType;
+                builder.RegisterType(virtualHubLocal).AsSelf();
                 builder.Register(context =>
                 {
                     
-                    var implementedHub = context.Resolve(virtualHubLocal);
-                    var retval = generator.CreateInterfaceProxyWithoutTarget(realHubInterfaceType, options, new ObservableInterceptor<IClient>(implementedHub));
+                    var implementedHub = context.Resolve(virtualHubLocal) as IHub;
+                    var retval = generator.CreateInterfaceProxyWithoutTarget(realHubInterfaceType, options, new ObservableInterceptor(implementedHub));
                     return retval;
                 }).As<IHub>().As(proxyType).ExternallyOwned();
-
             }
-            
-
-            builder.Register(
-                context =>
-                {
-                    var implementedHub = context.Resolve<MyHub>();
-                    var retval = generator.CreateInterfaceProxyWithoutTarget(realHubInterfaceType, options,
-                        new ObservableInterceptor<IClient>(implementedHub));
-                    return retval;
-                }).As<IHub>().As(proxyType).ExternallyOwned();
         }
 
         public static Type GeneratePrivateHubTypeForInterface(ProxyGenerator generator, Type publicHubInterface)
@@ -85,6 +82,13 @@ namespace SignalRSelfHost
 
             var realHubInterfaceType = typeBuilder.CreateType();
             return realHubInterfaceType;
+        }
+        private class EmptyInterceptor : IInterceptor
+        {
+            public void Intercept(IInvocation invocation)
+            {
+
+            }
         }
     }
 }

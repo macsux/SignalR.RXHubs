@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
+using Contract;
 using Microsoft.AspNet.SignalR.Hubs;
 
 namespace SignalRSelfHost

@@ -103,8 +103,6 @@
     <Compile Include="ContainerBuilderExtensions.cs" />
     <Compile Include="HubsModule.cs" />
     <Compile Include="HubTypeExtensions.cs" />
-    <Compile Include="IHubSupportsObservables.cs" />
-    <Compile Include="IVirtualHub.cs" />
     <Compile Include="MyHub.cs" />
     <Compile Include="ObservableHub.cs" />
     <Compile Include="ObservableInterceptor.cs" />

@@ -1,6 +1,6 @@
 using System;
 
-namespace SignalRSelfHost
+namespace Contract
 {
     public interface IHubSupportsObservables
     {
