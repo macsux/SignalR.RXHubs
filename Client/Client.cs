@@ -16,7 +16,7 @@ namespace Client
         static void Main(string[] args)
         {
 
-            var clientProxy = new ClientProxy("http://localhost:8000", "IServerHubProxy");
+            var clientProxy = new ClientProxy("http://localhost:8000", "MyHub");
             
             Console.WriteLine("Two subscriptions are now pumping out messages");
             var sub1 = clientProxy.GetClientMessageObservable().Subscribe(msg => Console.WriteLine("Sub1 {0} > {1}", msg.User, msg.Message), Console.WriteLine, () => Console.WriteLine("Sub1 Sequence ended"));
