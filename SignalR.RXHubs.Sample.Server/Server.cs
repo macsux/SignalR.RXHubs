@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using Castle.DynamicProxy;
 using Microsoft.Owin.Hosting;
 
-namespace SignalRSelfHost
+namespace SignalR.RXHubs.Sample.Server
 {
     internal class Server
     {

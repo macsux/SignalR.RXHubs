@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Contract;
 using Microsoft.AspNet.SignalR.Hubs;
+using SignalR.RXHubs.Core;
 
 namespace SignalRSelfHost
 {

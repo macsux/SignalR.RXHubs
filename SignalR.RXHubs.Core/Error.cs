@@ -1,6 +1,6 @@
 using System;
 
-namespace Contract
+namespace SignalR.RXHubs.Core
 {
     [Serializable]
     public class Error

@@ -9,10 +9,11 @@ using Contract;
 using Dynamitey;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
+using SignalR.RXHubs.Core;
 
 namespace SignalRSelfHost
 {
-    public abstract class ObservableHub<T> : Hub<T>, IHubSupportsObservables, IVirtualHub where T : class
+    public abstract class ObservableHub<T> : Hub<T>, IVirtualHub where T : class
     {
 
         private static readonly ConcurrentDictionary<Tuple<string, Guid>, IDisposable> _subscriptions = new ConcurrentDictionary<Tuple<string, Guid>, IDisposable>();

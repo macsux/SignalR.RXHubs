@@ -7,12 +7,12 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Contract;
 using Microsoft.AspNet.SignalR.Client;
 using Microsoft.AspNet.SignalR.Client.Hubs;
+using SignalR.RXHubs.Core;
 using ConnectionState = Microsoft.AspNet.SignalR.Client.ConnectionState;
 
-namespace Client
+namespace SignalR.RXHubs.Client
 {
     public static class HubConnectionExtensions
     {
@@ -43,9 +43,6 @@ namespace Client
                         .Merge(currentConnection);
 
                 var closedObservable = Observable.FromEvent(c => connection.Closed += c, c => connection.Closed -= c);
-                
-                //var typedProxy = connection.CreateHubProxy<THub, IDummy>(hubName);
-                
 
                 // if we're already connected, instantly subscribe
                 Guid observableId = Guid.Empty;
@@ -71,12 +68,12 @@ namespace Client
                     // server will do it's own cleanup
                     if (connection.State == ConnectionState.Connected && observableId != Guid.Empty)
                     {
-                        var proxy = connection.GetHubProxy(hubName) ?? connection.CreateHubProxy(hubName); ;
+                        var proxy = GetHubProxy(connection, hubName) ?? connection.CreateHubProxy(hubName); ;
                         await proxy.Invoke("Unsubscribe", observableId)
                             .ContinueWith(removalTask =>
                             {
                                 if (removalTask.IsFaulted)
-                                    Console.WriteLine(removalTask.Exception);
+                                    Console.WriteLine((object) removalTask.Exception);
                             });
                     }
                 };
@@ -86,7 +83,7 @@ namespace Client
 
         private static async Task<Guid> AddSubscription<TMessage, THub>(HubConnection connection,  string hubName, Expression<Func<THub, IObservable<TMessage>>> serverSubscribeMethod, IObserver<TMessage> observer) where THub : class
         {
-            var proxy = connection.GetHubProxy(hubName) ?? connection.CreateHubProxy(hubName); ;
+            var proxy = GetHubProxy(connection, hubName) ?? connection.CreateHubProxy(hubName); ;
             //                if (connection.State != ConnectionState.Connected)
             //                    await connection.Start();
 
@@ -113,12 +110,5 @@ namespace Client
             else
                 return null;
         }
-    }
-
-    public enum ConnectionLostBehavior
-    {
-        Error,
-        WaitForReconnect,
-        Complete
     }
 }

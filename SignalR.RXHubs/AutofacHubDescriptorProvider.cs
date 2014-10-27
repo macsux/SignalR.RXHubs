@@ -6,6 +6,7 @@ using Autofac;
 using Contract;
 using Microsoft.AspNet.SignalR.Hubs;
 using Newtonsoft.Json.Serialization;
+using SignalR.RXHubs.Core;
 
 namespace SignalRSelfHost
 {

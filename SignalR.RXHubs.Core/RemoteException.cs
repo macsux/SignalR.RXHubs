@@ -1,7 +1,6 @@
 using System;
-using Contract;
 
-namespace Client
+namespace SignalR.RXHubs.Core
 {
     public class RemoteException : Exception
     {

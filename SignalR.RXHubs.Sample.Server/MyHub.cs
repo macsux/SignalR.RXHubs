@@ -2,8 +2,9 @@ using System;
 using System.Reactive.Linq;
 using Contract;
 using Microsoft.AspNet.SignalR.Hubs;
+using SignalRSelfHost;
 
-namespace SignalRSelfHost
+namespace SignalR.RXHubs.Sample.Server
 {
     [HubName("MyHub")]
     public class MyHub : ObservableHub<IClient>, IServerHub

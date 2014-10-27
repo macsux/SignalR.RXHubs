@@ -7,8 +7,8 @@
     <ProjectGuid>{2C5AF590-B245-411B-B406-514C1E4DB87F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Contract</RootNamespace>
-    <AssemblyName>Contract</AssemblyName>
+    <RootNamespace>SignalR.RXHubs.Sample.Contract</RootNamespace>
+    <AssemblyName>SignalR.RXHubs.Sample.Contract</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,12 +40,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientMessage.cs" />
-    <Compile Include="Error.cs" />
-    <Compile Include="IHubSupportsObservables.cs" />
     <Compile Include="IServerHub.cs" />
     <Compile Include="IClient.cs" />
-    <Compile Include="IVirtualHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SignalR.RXHubs.Core\SignalR.RXHubs.Core.csproj">
+      <Project>{2055116d-d045-477d-8d4c-11374e4f15a7}</Project>
+      <Name>SignalR.RXHubs.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

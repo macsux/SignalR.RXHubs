@@ -1,25 +1,17 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using Autofac;
-using Autofac.Core;
-using Autofac.Integration.SignalR;
-using Castle.DynamicProxy;
-using Contract;
+﻿using Autofac;
 using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.Owin.Cors;
 using Owin;
+using SignalRSelfHost;
 
-namespace SignalRSelfHost
+namespace SignalR.RXHubs.Sample.Server
 {
     internal class Startup
     {
         public void Configuration(IAppBuilder app)
         {
             var containerBuilder = new ContainerBuilder();
-            containerBuilder.RegisterAssemblyModules(typeof(Startup).Assembly);
+            containerBuilder.RegisterModule<HubsModule>();
             var container = containerBuilder.Build();
 
             var resolver = new AutofacDependencyResolver(container);

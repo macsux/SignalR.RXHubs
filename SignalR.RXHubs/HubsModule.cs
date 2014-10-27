@@ -11,6 +11,7 @@ using Castle.DynamicProxy;
 using Contract;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
+using SignalR.RXHubs.Core;
 using Module = Autofac.Module;
 
 namespace SignalRSelfHost
@@ -19,14 +20,14 @@ namespace SignalRSelfHost
     {
         private Assembly[] _controllerAssemblies;
 
-        public HubsModule(params Assembly[] controllerAssemblies)
+        public HubsModule()
+            : this(new[] { Assembly.GetEntryAssembly() })
         {
-            if(controllerAssemblies.Any())
-                _controllerAssemblies = controllerAssemblies;
-            else
-            {
-                _controllerAssemblies = new[] { Assembly.GetEntryAssembly()};
-            }
+            
+        }
+        public HubsModule(Assembly[] controllerAssemblies)
+        {
+            _controllerAssemblies = controllerAssemblies;
         }
 
         protected override void Load(ContainerBuilder builder)
