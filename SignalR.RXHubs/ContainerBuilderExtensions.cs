@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Autofac;
-using Contract;
 using Microsoft.AspNet.SignalR.Hubs;
 using SignalR.RXHubs.Core;
 
-namespace SignalRSelfHost
+namespace SignalR.RXHubs
 {
     public static class ContainerBuilderExtensions
     {

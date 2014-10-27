@@ -3,7 +3,7 @@ using System.Linq;
 using Castle.DynamicProxy;
 using Microsoft.AspNet.SignalR.Hubs;
 
-namespace SignalRSelfHost
+namespace SignalR.RXHubs
 {
     public class ObservableInterceptor : IInterceptor
     {

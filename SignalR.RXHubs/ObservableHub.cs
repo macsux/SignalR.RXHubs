@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
 using System.Threading.Tasks;
-using Castle.DynamicProxy;
-using Contract;
 using Dynamitey;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using SignalR.RXHubs.Core;
 
-namespace SignalRSelfHost
+namespace SignalR.RXHubs
 {
     public abstract class ObservableHub<T> : Hub<T>, IVirtualHub where T : class
     {

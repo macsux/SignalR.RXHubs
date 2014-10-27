@@ -113,7 +113,7 @@
     </ProjectReference>
     <ProjectReference Include="..\SignalR.RXHubs.Sample.Contract\SignalR.RXHubs.Sample.Contract.csproj">
       <Project>{2c5af590-b245-411b-b406-514c1e4db87f}</Project>
-      <Name>Contract</Name>
+      <Name>SignalR.RXHubs.Sample.Contract</Name>
     </ProjectReference>
     <ProjectReference Include="..\SignalR.RXHubs\SignalR.RXHubs.csproj">
       <Project>{d3646efa-1cb6-4cf6-83c7-1963525fc3f0}</Project>

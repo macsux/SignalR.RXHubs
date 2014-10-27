@@ -2,7 +2,6 @@
 using Microsoft.AspNet.SignalR;
 using Microsoft.Owin.Cors;
 using Owin;
-using SignalRSelfHost;
 
 namespace SignalR.RXHubs.Sample.Server
 {

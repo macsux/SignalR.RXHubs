@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using Autofac;
-using Castle.Core.Internal;
 using Castle.DynamicProxy;
-using Contract;
-using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
 using SignalR.RXHubs.Core;
 using Module = Autofac.Module;
 
-namespace SignalRSelfHost
+namespace SignalR.RXHubs
 {
     public class HubsModule : Module
     {

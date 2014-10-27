@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamitey;
 using Microsoft.AspNet.SignalR.Hubs;
 
-namespace SignalRSelfHost
+namespace SignalR.RXHubs
 {
     internal static class HubTypeExtensions
     {

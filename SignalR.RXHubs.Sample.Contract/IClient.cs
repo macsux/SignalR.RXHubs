@@ -1,4 +1,4 @@
-﻿namespace Contract
+﻿namespace SignalR.RXHubs.Sample.Contract
 {
     public interface IClient
     {

@@ -1,9 +1,8 @@
 using System;
-using System.Runtime.InteropServices;
-using Contract;
 using Microsoft.AspNet.SignalR.Client;
+using SignalR.RXHubs.Sample.Contract;
 
-namespace Client
+namespace SignalR.RXHubs.Sample.Client
 {
     public class ClientProxy : IDisposable, IServerHub
     {

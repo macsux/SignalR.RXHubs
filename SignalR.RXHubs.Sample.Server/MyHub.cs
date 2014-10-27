@@ -1,8 +1,7 @@
 using System;
 using System.Reactive.Linq;
-using Contract;
 using Microsoft.AspNet.SignalR.Hubs;
-using SignalRSelfHost;
+using SignalR.RXHubs.Sample.Contract;
 
 namespace SignalR.RXHubs.Sample.Server
 {

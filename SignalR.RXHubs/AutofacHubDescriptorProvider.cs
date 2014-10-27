@@ -1,14 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Autofac;
-using Contract;
 using Microsoft.AspNet.SignalR.Hubs;
-using Newtonsoft.Json.Serialization;
 using SignalR.RXHubs.Core;
 
-namespace SignalRSelfHost
+namespace SignalR.RXHubs
 {
     public class AutofacHubDescriptorProvider : IHubDescriptorProvider
     {
