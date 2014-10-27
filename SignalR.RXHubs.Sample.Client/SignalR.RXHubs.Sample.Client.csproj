@@ -96,6 +96,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SignalR.RXHubs.Client\SignalR.RXHubs.Client.csproj">
+      <Project>{60377279-711d-427e-839f-5b359cd29288}</Project>
+      <Name>SignalR.RXHubs.Client</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SignalR.RXHubs.Core\SignalR.RXHubs.Core.csproj">
       <Project>{2055116d-d045-477d-8d4c-11374e4f15a7}</Project>
       <Name>SignalR.RXHubs.Core</Name>

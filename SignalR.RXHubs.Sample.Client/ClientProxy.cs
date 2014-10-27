@@ -1,5 +1,6 @@
 using System;
 using Microsoft.AspNet.SignalR.Client;
+using SignalR.RXHubs.Client;
 using SignalR.RXHubs.Sample.Contract;
 
 namespace SignalR.RXHubs.Sample.Client
