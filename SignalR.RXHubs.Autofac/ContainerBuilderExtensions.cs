@@ -4,7 +4,7 @@ using Autofac;
 using Microsoft.AspNet.SignalR.Hubs;
 using SignalR.RXHubs.Core;
 
-namespace SignalR.RXHubs
+namespace SignalR.RXHubs.Autofac
 {
     public static class ContainerBuilderExtensions
     {

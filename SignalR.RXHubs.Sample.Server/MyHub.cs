@@ -20,7 +20,10 @@ namespace SignalR.RXHubs.Sample.Server
             return Observable.Interval(TimeSpan.FromSeconds(1)).Select(x => new ClientMessage {Message = Guid.NewGuid().ToString(), User = "Server"});
         }
 
-
+        public IObservable<string> Test()
+        {
+            return Observable.Interval(TimeSpan.FromSeconds(1)).Select(x => "Test");
+        }
         public void RemoveMsg(string msgType)
         {
             Console.WriteLine("{0} removed", msgType);

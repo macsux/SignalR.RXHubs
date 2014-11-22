@@ -1,23 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Autofac;
 using Microsoft.AspNet.SignalR.Hubs;
+using Microsoft.Practices.ServiceLocation;
 using SignalR.RXHubs.Core;
 
-namespace SignalR.RXHubs
+namespace SignalR.RXHubs.Autofac
 {
-    public class AutofacHubDescriptorProvider : IHubDescriptorProvider
+    public class ContainerHubDescriptorProvider : IHubDescriptorProvider
     {
-        private IComponentContext _container;
+        private readonly IServiceLocator _container;
 
-        public AutofacHubDescriptorProvider(IComponentContext container)
+        public ContainerHubDescriptorProvider(IServiceLocator container)
         {
             _container = container;
         }
 
         public IList<HubDescriptor> GetHubs()
         {
-            var hubs = _container.Resolve<IEnumerable<IHub>>().Where(hub => !(hub is IVirtualHub));
+            var hubs = _container.GetAllInstances<IHub>().Where(hub => !(hub is IVirtualHub));
             var retval = hubs.Select(hub => new HubDescriptor()
             {
                 HubType = hub.GetType(),
@@ -32,6 +32,6 @@ namespace SignalR.RXHubs
             descriptor = GetHubs().FirstOrDefault(x => x.Name == hubName);
             return descriptor != null;
         }
-        
+
     }
 }

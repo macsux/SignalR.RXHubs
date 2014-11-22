@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using Microsoft.AspNet.SignalR.Hubs;
 
-namespace SignalR.RXHubs
+namespace SignalR.RXHubs.Core
 {
-    internal static class HubTypeExtensions
+    public static class HubTypeExtensions
     {
-        internal static string GetHubName(this Type type)
+        public static string GetHubName(this Type type)
         {
             if (!typeof(IHub).IsAssignableFrom(type))
             {
@@ -16,7 +16,7 @@ namespace SignalR.RXHubs
             return GetHubAttributeName(type) ?? type.Name;
         }
 
-        internal static string GetHubAttributeName(this Type type)
+        public static string GetHubAttributeName(this Type type)
         {
             if (!typeof(IHub).IsAssignableFrom(type))
             {
@@ -26,7 +26,7 @@ namespace SignalR.RXHubs
             return ReflectionHelper.GetAttributeValue<HubNameAttribute, string>(type, attr => attr.HubName);
         }
 
-        internal static IEnumerable<Type> GetParents(this Type type)
+        public static IEnumerable<Type> GetParents(this Type type)
         {
             if (type.BaseType != null)
             {

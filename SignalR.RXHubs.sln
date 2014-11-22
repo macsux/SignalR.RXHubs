@@ -22,6 +22,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR.RXHubs.Core", "Sign
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR.RXHubs.Client", "SignalR.RXHubs.Client\SignalR.RXHubs.Client.csproj", "{60377279-711D-427E-839F-5B359CD29288}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{05CE678A-72F6-479C-9577-18C57CA25361}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR.RXHubs.Autofac", "SignalR.RXHubs.Autofac\SignalR.RXHubs.Autofac.csproj", "{2F3B7607-0C8D-41A5-8E42-4AF0C522BB15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +63,10 @@ Global
 		{60377279-711D-427E-839F-5B359CD29288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60377279-711D-427E-839F-5B359CD29288}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60377279-711D-427E-839F-5B359CD29288}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F3B7607-0C8D-41A5-8E42-4AF0C522BB15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F3B7607-0C8D-41A5-8E42-4AF0C522BB15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F3B7607-0C8D-41A5-8E42-4AF0C522BB15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F3B7607-0C8D-41A5-8E42-4AF0C522BB15}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,6 @@
 ﻿using System;
+using SignalR.RXHubs.Client;
+using SignalR.RXHubs.Sample.Contract;
 
 namespace SignalR.RXHubs.Sample.Client
 {
@@ -6,14 +8,17 @@ namespace SignalR.RXHubs.Sample.Client
     {
         static void Main(string[] args)
         {
-
-            var clientProxy = new ClientProxy("http://localhost:8000", "MyHub");
             
+//            var clientProxy = new ClientProxy("http://localhost:8000", "MyHub");
+            var clientProxy = new ObservableHubProxy<IServerHub>("http://localhost:8000", "MyHub", ConnectionLostBehavior.Error);
+            
+
+
             Console.WriteLine("Two subscriptions are now pumping out messages");
-            var sub1 = clientProxy.GetClientMessageObservable().Subscribe(msg => Console.WriteLine("Sub1 {0} > {1}", msg.User, msg.Message), Console.WriteLine, () => Console.WriteLine("Sub1 Sequence ended"));
-            var sub2 = clientProxy.GetClientMessageObservable().Subscribe(msg => Console.WriteLine("Sub2 {0} > {1}", msg.User, msg.Message), Console.WriteLine, () => Console.WriteLine("Sub2 Sequence ended"));
+            var sub1 = clientProxy.Proxy.GetClientMessageObservable().Subscribe(msg => Console.WriteLine("Sub1 {0} > {1}", msg.User, msg.Message), Console.WriteLine, () => Console.WriteLine("Sub1 Sequence ended"));
+            var sub2 = clientProxy.Proxy.GetClientMessageObservable().Subscribe(msg => Console.WriteLine("Sub2 {0} > {1}", msg.User, msg.Message), Console.WriteLine, () => Console.WriteLine("Sub2 Sequence ended"));
             Console.ReadLine();
-            clientProxy.Connect();
+            clientProxy.Connection.Start().Wait();
 
 //            clientProxy.Add("userA", "hi");
             Console.WriteLine("Press any key to disconnect Sub 1");

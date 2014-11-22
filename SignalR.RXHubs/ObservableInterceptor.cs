@@ -31,9 +31,10 @@ namespace SignalR.RXHubs
             }
             else if (targetMethod.ReturnType.IsGenericType && targetMethod.ReturnType.GetGenericTypeDefinition() == typeof(IObservable<>))
             {
-                var observable = targetMethod.Invoke(_implementation, invocation.Arguments);
+                var subscriptionId = (Guid) invocation.Arguments[0];
+                var observable = targetMethod.Invoke(_implementation, invocation.Arguments.Skip(1).ToArray());
                 var subscribeMethod = _implementation.GetType().GetMethod("SubscribeCallerToObservable").MakeGenericMethod(observable.GetType().GetGenericArguments().Last());
-                invocation.ReturnValue = subscribeMethod.Invoke(_implementation, new[] {observable});
+                invocation.ReturnValue = subscribeMethod.Invoke(_implementation, new[] {subscriptionId,observable});
                 //invocation.ReturnValue = _implementation.SubscribeCallerToObservable(observable);
             }
             

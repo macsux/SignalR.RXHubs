@@ -9,7 +9,7 @@ using System.Linq;
 using Autofac;
 using Microsoft.AspNet.SignalR;
 
-namespace SignalR.RXHubs
+namespace SignalR.RXHubs.Autofac
 {
     /// <summary>
     /// Autofac implementation of the <see cref="T:Microsoft.AspNet.SignalR.IDependencyResolver"/> interface.
@@ -44,7 +44,7 @@ namespace SignalR.RXHubs
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:SignalR.RXHubs.AutofacDependencyResolver"/> class.
+        /// Initializes a new instance of the <see cref="T:SignalR.RXHubs.Autofac.AutofacDependencyResolver"/> class.
         /// 
         /// </summary>
         /// <param name="lifetimeScope">The lifetime scope that services will be resolved from.</param><exception cref="T:System.ArgumentNullException">Thrown if <paramref name="lifetimeScope"/> is <see langword="null"/>.
