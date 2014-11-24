@@ -8,7 +8,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Client;
-using Newtonsoft.Json.Linq;
 using SignalR.RXHubs.Core;
 
 namespace SignalR.RXHubs.Client
@@ -103,7 +102,7 @@ namespace SignalR.RXHubs.Client
                     subscriptionParameters.Insert(0, observableId);
                     try
                     {
-                        await this._hubProxy.Invoke(methodLocal, subscriptionParameters.ToArray());
+                        await _hubProxy.Invoke(methodLocal, subscriptionParameters.ToArray());
                     }
                     catch (Exception)
                     {
@@ -121,12 +120,12 @@ namespace SignalR.RXHubs.Client
                         disposables.Add(closedObservable.Subscribe(o => observer.OnCompleted()));
                         break;
                 }
-                this._subscriptions.TryAdd(observableId, disposables);
+                _subscriptions.TryAdd(observableId, disposables);
                 return async () =>
                 {
                     disposables.Dispose();
                     IDisposable temp;
-                    this._subscriptions.TryRemove(observableId, out temp);
+                    _subscriptions.TryRemove(observableId, out temp);
                     // only do explicit unsubscribe if we actually subscribed before and still connected
                     // server will do it's own cleanup
                     if (_connection.State == ConnectionState.Connected && observableId != Guid.Empty)
@@ -135,7 +134,7 @@ namespace SignalR.RXHubs.Client
                             .ContinueWith(removalTask =>
                             {
                                 if (removalTask.IsFaulted)
-                                    Console.WriteLine((object) removalTask.Exception);
+                                    Console.WriteLine(removalTask.Exception);
                             });
                     }
                 };
@@ -147,7 +146,7 @@ namespace SignalR.RXHubs.Client
             var actionDetails = serverSubscribeMethod.GetActionDetails();
             var subscriptionParameters = actionDetails.Parameters.ToList();
             subscriptionParameters.Insert(0, subscriptionId);
-            await this._hubProxy.Invoke(actionDetails.MethodName, subscriptionParameters.ToArray());
+            await _hubProxy.Invoke(actionDetails.MethodName, subscriptionParameters.ToArray());
 
 //            string onNextMessageName = string.Format("{0}-{1}", observableId, "OnNext");
 //            string onErrorMessageName = string.Format("{0}-{1}", observableId, "OnError");

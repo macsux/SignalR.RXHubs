@@ -5,6 +5,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
+using Castle.Core.Internal;
 using SignalR.RXHubs.Core;
 
 namespace SignalR.RXHubs
@@ -28,22 +29,64 @@ namespace SignalR.RXHubs
             var resendTimer = Observable.Timer(TimeSpan.FromSeconds(1))
                 .Do(_ =>
                 {
+                    /* As sample maybe but need thinking about parallel  - Not violated any logic*/
+                    //If the number is already assigned to sequencing - that the idea should be all right, but it depends of course on all the logic that there will be
+                    //Well, if the parallel course a lot of them will be in ConcurrentDictionary<long, MessageBuffer> _messageBuffer
+                    //Correspondingly, there is still code optimization can be
+                    //Due to the fact that they remove the idea that still need to run naturally better at other collections
+                    var data = _messageBuffer.AsParallel().Where(x => DateTime.Now.Subtract(x.Value.LastSentAttempt).Seconds < 5).ToList();
+                    data.AsParallel().ForEach(message =>
+                    {
+                        var error = message.Value.Payload as Error;
+                        if (error != null)
+                        {
+                            errorTransport(message.Key, error);
+                        }
+                        else
+                        {
+                            var end = message.Value.Payload as SequenceEnd;
+                            if (end != null)
+                            {
+                                completeTransport(message.Key, end);
+                            }
+                            else
+                            {
+                                nextTransport(message.Key, message.Value.Payload);
+                            }
+                        }
+                        message.Value.LastSentAttempt = DateTime.Now;
+                        MessageBuffer outValue;
+                        _messageBuffer.TryRemove(message.Key, out outValue);
+                    });
+
+                    var dataTimeOut = _messageBuffer.AsParallel().Where(x => DateTime.Now.Subtract(x.Value.LastSentAttempt).Seconds >= 5).ToList();
+                    dataTimeOut.AsParallel().ForEach(message =>
+                    {
+                        //To do
+                    });
+
+                    
 //                    int bufferLength = 0;
                     foreach (var message in _messageBuffer)
                     {
                         if (message.Value.LastSentAttempt < DateTime.Now.AddSeconds(5))
                         {
-                            if (message.Value.Payload is Error)
+                            var error = message.Value.Payload as Error;
+                            if (error != null)
                             {
-                                errorTransport(message.Key, (Error) message.Value.Payload);
-                            }
-                            else if (message.Value.Payload is SequenceEnd)
-                            {
-                                completeTransport(message.Key, (SequenceEnd) message.Value.Payload);
+                                errorTransport(message.Key, error);
                             }
                             else
                             {
-                                nextTransport(message.Key, message.Value.Payload);
+                                var end = message.Value.Payload as SequenceEnd;
+                                if (end != null)
+                                {
+                                    completeTransport(message.Key, end);
+                                }
+                                else
+                                {
+                                    nextTransport(message.Key, message.Value.Payload);
+                                }
                             }
                             message.Value.LastSentAttempt = DateTime.Now;
                         }
@@ -82,14 +125,14 @@ namespace SignalR.RXHubs
         {
             var sequenceTerminator = new Error( exception);
             AddSequenceTerminatorToBuffer(sequenceTerminator);
-            _errorTransport(sequenceTerminator);
+            //_errorTransport(sequenceTerminator);
         }
 
         public void OnCompleted()
         {
             var sequenceTerminator = new SequenceEnd();
             AddSequenceTerminatorToBuffer(sequenceTerminator);
-            _completeTransport(sequenceTerminator);
+           // _completeTransport(sequenceTerminator);
         }
 
         private void AddSequenceTerminatorToBuffer(SequenceEnd sequenceTerminator)

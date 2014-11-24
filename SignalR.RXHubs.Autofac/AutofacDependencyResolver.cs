@@ -39,7 +39,7 @@ namespace SignalR.RXHubs.Autofac
         {
             get
             {
-                return this._lifetimeScope;
+                return _lifetimeScope;
             }
         }
 
@@ -53,7 +53,7 @@ namespace SignalR.RXHubs.Autofac
         {
             if (lifetimeScope == null)
                 throw new ArgumentNullException("lifetimeScope");
-            this._lifetimeScope = lifetimeScope;
+            _lifetimeScope = lifetimeScope;
         }
 
         /// <summary>
@@ -66,12 +66,7 @@ namespace SignalR.RXHubs.Autofac
         /// </returns>
         public override object GetService(Type serviceType)
         {
-
-            var retval = ResolutionExtensions.ResolveOptional((IComponentContext) this._lifetimeScope,
-                (Type) serviceType);
-            if(retval == null)
-                retval = base.GetService(serviceType);
-            return retval;
+            return _lifetimeScope.ResolveOptional(serviceType) ?? base.GetService(serviceType);
         }
 
         /// <summary>
@@ -84,16 +79,12 @@ namespace SignalR.RXHubs.Autofac
         /// </returns>
         public override IEnumerable<object> GetServices(Type serviceType)
         {
-            IEnumerable<object> source = (IEnumerable<object>)ResolutionExtensions.Resolve((IComponentContext)this._lifetimeScope, (Type)typeof(IEnumerable<>).MakeGenericType(new Type[1]
-      {
-        serviceType
-      }));
-            IEnumerable<object> retval;
-            if (!Enumerable.Any<object>(source))
-                retval = base.GetServices(serviceType);
-            else
-                retval = source;
-            return retval;
+            var source = (IEnumerable<object>)(_lifetimeScope).Resolve(typeof(IEnumerable<>).MakeGenericType(new Type[1]
+            {
+                serviceType
+            }));
+            var sourceResult = source.ToArray();
+            return sourceResult.Any() ? sourceResult : base.GetServices(serviceType);
         }
     }
 }

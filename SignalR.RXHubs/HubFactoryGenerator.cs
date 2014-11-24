@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Castle.DynamicProxy;
 using Microsoft.AspNet.SignalR.Hubs;
-using Microsoft.Practices.ServiceLocation;
 using SignalR.RXHubs.Core;
 
 namespace SignalR.RXHubs

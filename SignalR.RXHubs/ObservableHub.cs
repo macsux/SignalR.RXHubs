@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNet.SignalR.Hubs;
-using Microsoft.AspNet.SignalR.Messaging;
 using Microsoft.Practices.ServiceLocation;
 using SignalR.RXHubs.Core;
 

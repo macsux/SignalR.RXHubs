@@ -6,7 +6,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.AspNet.SignalR.Client;
 using Microsoft.AspNet.SignalR.Client.Hubs;
-using Newtonsoft.Json;
 
 namespace SignalR.RXHubs.Client
 {
@@ -19,10 +18,8 @@ namespace SignalR.RXHubs.Client
             if (field == null)
                 throw new ConstraintException("Couldn't find \"_hubs\" field inside of the HubConnection.");
             var dictionary = (Dictionary<string, HubProxy>)field.GetValue(hubConnection);
-            if (dictionary.ContainsKey(hubName))
-                return dictionary[hubName];
-            else
-                return null;
+
+            return dictionary.ContainsKey(hubName) ? dictionary[hubName] : null;
         }
         internal static ActionDetail GetActionDetails<TInput, TResult>(this Expression<Func<TInput, TResult>> action)
         {

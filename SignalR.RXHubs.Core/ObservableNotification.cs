@@ -7,8 +7,8 @@ namespace SignalR.RXHubs.Core
     {
         public ObservableNotification(Guid id, JToken payload)
         {
-            this.SubscriptionId = id;
-            this.Message = payload;
+            SubscriptionId = id;
+            Message = payload;
         }
         public Guid SubscriptionId { get; set; }
         public int SequenceNo { get; set; }
