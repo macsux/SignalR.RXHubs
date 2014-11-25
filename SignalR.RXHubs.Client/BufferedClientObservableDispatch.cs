@@ -33,7 +33,7 @@ namespace SignalR.RXHubs.Client
             var expectedMsgNo = Interlocked.Read(ref _nextCounter);
             if (expectedMsgNo == transportMessage.MsgNumber)
             {
-                PropogateMessage(transportMessage);
+                PropagateMessage(transportMessage);
                 ProcessBuffer();
             }
             else
@@ -47,10 +47,10 @@ namespace SignalR.RXHubs.Client
             ObservableNotification expectedMsg;
             while (_buffer.TryRemove(_nextCounter, out expectedMsg))
             {
-                PropogateMessage(expectedMsg);
+                PropagateMessage(expectedMsg);
             }
         }
-        private void PropogateMessage(ObservableNotification transportMessage)
+        private void PropagateMessage(ObservableNotification transportMessage)
         {
             switch (transportMessage.Component)
             {

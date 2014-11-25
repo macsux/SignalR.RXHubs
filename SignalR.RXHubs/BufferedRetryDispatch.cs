@@ -20,7 +20,8 @@ namespace SignalR.RXHubs
         private readonly ConcurrentDictionary<long, MessageBuffer> _messageBuffer = new ConcurrentDictionary<long, MessageBuffer>();
         private long _nextCounter;
 
-        public BufferedRetryDispatch(Guid observableId, Action<ObservableNotification> transportAction, IDisposable subscription) : this(observableId,transportAction,subscription,null)
+        public BufferedRetryDispatch(Guid observableId, Action<ObservableNotification> transportAction, IDisposable subscription) : 
+            this(observableId,transportAction,subscription,null)
         {
             
         }

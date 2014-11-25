@@ -33,7 +33,7 @@ namespace SignalR.RXHubs.Tests
             scheduler.Start();
             observer.Messages.AssertEqual(
                 OnNext(10, "A"),
-                OnNext(30, "B"),
+                OnNext(30, "B"), // B & C will be "output" at the same time as we held back C until B arrived
                 OnNext(30, "C"),
                 OnCompleted<string>(40)
             );
