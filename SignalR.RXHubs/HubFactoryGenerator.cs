@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 using Castle.DynamicProxy;
 using Microsoft.AspNet.SignalR.Hubs;
-using Microsoft.Practices.ServiceLocation;
 using SignalR.RXHubs.Core;
 
 namespace SignalR.RXHubs
@@ -18,8 +17,6 @@ namespace SignalR.RXHubs
 
         public HubFactory GetRealHubFactory(HubFactory virtualHubFactory)
         {
-//            builder.RegisterType(virtualHubLocal).AsSelf();
-
             var virtualHubInterface =
                 virtualHubFactory.HubType.GetInterfaces().Where(i => i != typeof(IVirtualHub)).FirstOrDefault(i => typeof(IVirtualHub).IsAssignableFrom(i));
             if (virtualHubInterface == null)

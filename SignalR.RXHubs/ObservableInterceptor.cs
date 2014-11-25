@@ -12,7 +12,6 @@ namespace SignalR.RXHubs
         public ObservableInterceptor(IHub virtualHub)
         {
             _implementation = virtualHub;
-            
         }
 
         public void Intercept(IInvocation invocation)

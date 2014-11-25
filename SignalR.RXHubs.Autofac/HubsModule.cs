@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Security.Cryptography.X509Certificates;
 using Autofac;
-using Castle.DynamicProxy;
 using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.Practices.ServiceLocation;
 using SignalR.RXHubs.Core;

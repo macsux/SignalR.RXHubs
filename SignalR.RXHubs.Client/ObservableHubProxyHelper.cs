@@ -122,7 +122,7 @@ namespace SignalR.RXHubs.Client
                             .ContinueWith(removalTask =>
                             {
                                 if (removalTask.IsFaulted)
-                                    Console.WriteLine((object) removalTask.Exception);
+                                    Console.WriteLine(removalTask.Exception);
                             });
                     }
                 };
