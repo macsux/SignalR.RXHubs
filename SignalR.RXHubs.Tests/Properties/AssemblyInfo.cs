@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SignalR.RXHubs.Core")]
+[assembly: AssemblyTitle("SignalR.RXHubs.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SignalR.RXHubs.Core")]
+[assembly: AssemblyProduct("SignalR.RXHubs.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("636a9ffd-3b3d-427e-9cb4-1ab9efae3d9e")]
+[assembly: Guid("82e92b12-8342-4ab7-b1ee-69ee1f633b8e")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -34,8 +34,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
-[assembly: InternalsVisibleTo("SignalR.RXHubs")]
-[assembly: InternalsVisibleTo("SignalR.RXHubs.Client")]
-[assembly: InternalsVisibleTo("SignalR.RXHubs.Autofac")]
-[assembly: InternalsVisibleTo("SignalR.RXHubs.Tests")]

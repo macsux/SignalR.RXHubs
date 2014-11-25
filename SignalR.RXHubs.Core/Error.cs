@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 
 namespace SignalR.RXHubs.Core
 {
@@ -10,7 +11,7 @@ namespace SignalR.RXHubs.Core
         public string StackTrace { get; set; }
 
        
-
+        [JsonConstructor]
         public Error(string message)
             //: base(totalMessages)
         {

@@ -16,13 +16,13 @@ namespace SignalR.RXHubs
     public abstract class ObservableHub<T> : Hub<T>, IVirtualHub where T : class
     {
         private static readonly ConcurrentDictionary<Tuple<string, Guid>, IObservableDispatch> _subscriptions = new ConcurrentDictionary<Tuple<string, Guid>, IObservableDispatch>();
-        private readonly Func<Action<long, object>, Action<long,Error>, Action<long,SequenceEnd>, IDisposable, IObservableDispatch> _observableDispatchFactory;
+        private readonly Func<Guid, Action<ObservableNotification>, IDisposable, IObservableDispatch> _observableDispatchFactory;
         protected ObservableHub()
-            : this(ServiceLocator.Current.GetInstance<Func<Action<long, object>, Action<long, Error>, Action<long, SequenceEnd>, IDisposable, IObservableDispatch>>())
+            : this(ServiceLocator.Current.GetInstance<Func<Guid, Action<ObservableNotification>, IDisposable, IObservableDispatch>>())
         {
             
         }
-        protected ObservableHub(Func<Action<long, object>, Action<long, Error>, Action<long, SequenceEnd>, IDisposable, IObservableDispatch> observableDispatchFactory)
+        protected ObservableHub(Func<Guid, Action<ObservableNotification>, IDisposable, IObservableDispatch> observableDispatchFactory)
         {
             _observableDispatchFactory = observableDispatchFactory;
         }
@@ -58,11 +58,7 @@ namespace SignalR.RXHubs
             var client = hub.Clients.Caller;
             
             var observableSubscription = new CompositeDisposable();
-            var dispatcher = _observableDispatchFactory(
-                (msgNo, payload) => client.ObservableOnNext(observableId, msgNo, payload),
-                (msgNo, error) => client.ObservableOnError(observableId, msgNo, error),
-                (msgNo, end) => client.ObservableOnComplete(observableId, msgNo),
-                observableSubscription);
+            var dispatcher = _observableDispatchFactory(observableId, notification => client.O(notification), observableSubscription);
 
             _subscriptions.TryAdd(clientSubscriptionId, dispatcher);
             observableSubscription.Add(observable.Subscribe(x => dispatcher.OnNext(x), dispatcher.OnError, dispatcher.OnCompleted));

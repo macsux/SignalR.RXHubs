@@ -17,7 +17,7 @@ namespace SignalR.RXHubs.Sample.Server
 
         public IObservable<ClientMessage> GetClientMessageObservable()
         {
-            return Observable.Interval(TimeSpan.FromSeconds(1)).Select(x => new ClientMessage {Message = Guid.NewGuid().ToString(), User = "Server"});
+            return Observable.Interval(TimeSpan.FromSeconds(1)).Select(x => new ClientMessage {Message = x.ToString(), User = "Server"});
         }
 
         public IObservable<string> Test()

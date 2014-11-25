@@ -72,6 +72,9 @@ namespace SignalR.RXHubs
             var unsubscribeMethod = typeof(ObservableHub<>).GetMethod("Unsubscribe");
             typeBuilder.DefineMethod(unsubscribeMethod.Name, MethodAttributes.Abstract | MethodAttributes.Public | MethodAttributes.Virtual, unsubscribeMethod.ReturnType,
                 unsubscribeMethod.GetParameters().Select(x => x.ParameterType).ToArray());
+            var ackMethod = typeof(ObservableHub<>).GetMethod("Ack");
+            typeBuilder.DefineMethod(ackMethod.Name, MethodAttributes.Abstract | MethodAttributes.Public | MethodAttributes.Virtual, ackMethod.ReturnType,
+                ackMethod.GetParameters().Select(x => x.ParameterType).ToArray());
 
             var realHubInterfaceType = typeBuilder.CreateType();
             return realHubInterfaceType;

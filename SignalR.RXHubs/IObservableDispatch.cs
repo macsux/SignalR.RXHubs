@@ -9,7 +9,7 @@ namespace SignalR.RXHubs
 //        
 //    }
 
-    public interface IObservableDispatch : IObserver<object>
+    public interface IObservableDispatch : IObserver<object>, IDisposable
     {
         CompositeDisposable Subscription { get; }
         long NextCounter { get; }

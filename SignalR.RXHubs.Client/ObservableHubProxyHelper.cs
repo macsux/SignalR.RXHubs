@@ -15,13 +15,13 @@ namespace SignalR.RXHubs.Client
 {
     internal class ObservableHubProxyHelper<THub> : IDisposable where THub : class 
     {
-        private readonly ConcurrentDictionary<Guid, IDisposable> _subscriptions = new ConcurrentDictionary<Guid, IDisposable>();
+        private readonly CompositeDisposable _disposable = new CompositeDisposable();
+        private readonly ConcurrentDictionary<Guid, IClientDispatch> _subscriptions = new ConcurrentDictionary<Guid, IClientDispatch>();
         private readonly HubConnection _connection;
         private readonly ConnectionLostBehavior _behavior;
         private readonly IHubProxy _hubProxy;
-        private readonly IObservable<ObservableNotification> _observableOnNext;
-        private readonly IObservable<ObservableNotification> _observableOnError;
-        private readonly IObservable<Guid> _observableOnComplete;
+        private readonly IObservable<ObservableNotification> _transportObservable;
+
         public IHubProxy HubProxy
         {
             get { return _hubProxy; }
@@ -35,9 +35,8 @@ namespace SignalR.RXHubs.Client
 
             _hubProxy = connection.GetHubProxy(hubName) ?? connection.CreateHubProxy(hubName);
 
-            _observableOnNext = _hubProxy.Observe("ObservableOnNext").Select(x => new ObservableNotification(x[0].ToObject<Guid>(), x[1])).Publish().RefCount();
-            _observableOnError = _hubProxy.Observe("ObservableOnError").Select(x => new ObservableNotification(x[0].ToObject<Guid>(), x[1])).Publish().RefCount();
-            _observableOnComplete = _hubProxy.Observe("ObservableOnComplete").Select(x => x[0].ToObject<Guid>()).Publish().RefCount();
+            _transportObservable = _hubProxy.Observe(Strings.ObservableNotification).Select(x => x[0].ToObject<ObservableNotification>()).Publish().RefCount();
+            _transportObservable.Subscribe(x => _hubProxy.Invoke(Strings.Ack, x.SubscriptionId, x.MsgNumber)).DisposeWith(_disposable);
 
         }
 
@@ -80,24 +79,11 @@ namespace SignalR.RXHubs.Client
                 Guid observableId = Guid.NewGuid();
 
                 // start listening to the common "on-next" stream for messages with our id, and deserialize them into expected format
-                disposables.Add(_observableOnNext.Where(x => x.SubscriptionId == observableId)
-                    .Subscribe(msg => observer.OnNext(msg.Message.ToObject<TMessage>())));
-                disposables.Add(_observableOnError.Where(x => x.SubscriptionId == observableId)
-                    .Subscribe(msg =>
-                {
-                    // terminate subscription during error
-                    observer.OnError(new RemoteException(msg.Message.ToObject<Error>()));
-                    disposables.Dispose();
-                }));
-                disposables.Add(_observableOnComplete.Where(x => x == observableId).Subscribe(msg =>
-                {
-                    //terminate subscription when complete
-                    observer.OnCompleted();
-                    disposables.Dispose();
-                }));
+
+                var dispatch = new ClientDispatch<TMessage>(observableId, observer, this._transportObservable).DisposeWith(disposables);
 
                 // wait until we're connected, then add subscription
-                disposables.Add(newConnectionObservable.Subscribe(async _ =>
+                newConnectionObservable.Subscribe(async _ =>
                 {
                     var subscriptionParameters = parametersLocal.ToList();
                     subscriptionParameters.Insert(0, observableId);
@@ -110,7 +96,8 @@ namespace SignalR.RXHubs.Client
                         // TODO: Decide what to do with reconnection
                     }
                     
-                }));
+                })
+                .DisposeWith(disposables);
 
                 switch (_behavior)
                 {
@@ -121,11 +108,11 @@ namespace SignalR.RXHubs.Client
                         disposables.Add(closedObservable.Subscribe(o => observer.OnCompleted()));
                         break;
                 }
-                this._subscriptions.TryAdd(observableId, disposables);
+                this._subscriptions.TryAdd(observableId, dispatch);
                 return async () =>
                 {
                     disposables.Dispose();
-                    IDisposable temp;
+                    IClientDispatch temp;
                     this._subscriptions.TryRemove(observableId, out temp);
                     // only do explicit unsubscribe if we actually subscribed before and still connected
                     // server will do it's own cleanup
@@ -148,15 +135,6 @@ namespace SignalR.RXHubs.Client
             var subscriptionParameters = actionDetails.Parameters.ToList();
             subscriptionParameters.Insert(0, subscriptionId);
             await this._hubProxy.Invoke(actionDetails.MethodName, subscriptionParameters.ToArray());
-
-//            string onNextMessageName = string.Format("{0}-{1}", observableId, "OnNext");
-//            string onErrorMessageName = string.Format("{0}-{1}", observableId, "OnError");
-//            string onCompleteMessageName = string.Format("{0}-{1}", observableId, "OnComplete");
-//            proxy.On<TMessage>(onNextMessageName, observer.OnNext);
-//            proxy.On<Error>(onErrorMessageName, error => observer.OnError(new RemoteException(error)));
-//            proxy.On(onCompleteMessageName, observer.OnCompleted);
-//
-//            return observableId;
         }
 
         public void Dispose()
