@@ -91,6 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContainerHubDescriptorProvider.cs" />
     <Compile Include="HubFactory.cs" />
     <Compile Include="HubFactoryGenerator.cs" />
     <Compile Include="IHubFactoryGenerator.cs" />

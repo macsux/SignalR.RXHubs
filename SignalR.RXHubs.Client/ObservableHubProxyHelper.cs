@@ -36,7 +36,14 @@ namespace SignalR.RXHubs.Client
             _hubProxy = connection.GetHubProxy(hubName) ?? connection.CreateHubProxy(hubName);
 
             _transportObservable = _hubProxy.Observe(Strings.ObservableNotification).Select(x => x[0].ToObject<ObservableNotification>()).Publish().RefCount();
-            _transportObservable.Subscribe(x => _hubProxy.Invoke(Strings.Ack, x.SubscriptionId, x.MsgNumber)).DisposeWith(_disposable);
+            _transportObservable.Subscribe(x =>
+            {
+                _hubProxy.Invoke(Strings.Ack, x.SubscriptionId, x.MsgNumber);
+                if (!_subscriptions.ContainsKey(x.SubscriptionId))
+                {
+                    _hubProxy.Invoke("Unsubscribe", observableId)
+                }
+            }).DisposeWith(_disposable);
 
         }
 

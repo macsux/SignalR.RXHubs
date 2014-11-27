@@ -4,7 +4,7 @@ using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.Practices.ServiceLocation;
 using SignalR.RXHubs.Core;
 
-namespace SignalR.RXHubs.Autofac
+namespace SignalR.RXHubs
 {
     public class ContainerHubDescriptorProvider : IHubDescriptorProvider
     {

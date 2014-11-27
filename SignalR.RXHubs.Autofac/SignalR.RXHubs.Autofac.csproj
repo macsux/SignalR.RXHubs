@@ -73,9 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutofacDependencyResolver.cs" />
-    <Compile Include="AutofacHubDescriptorProvider.cs" />
     <Compile Include="ContainerBuilderExtensions.cs" />
-    <Compile Include="ContainerHubDescriptorProvider.cs" />
     <Compile Include="HubsModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
