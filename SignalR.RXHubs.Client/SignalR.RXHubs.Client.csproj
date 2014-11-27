@@ -59,7 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BufferedClientObservableDispatch.cs" />
+    <Compile Include="ClientDispatch.cs" />
     <Compile Include="ConnectionLostBehavior.cs" />
     <Compile Include="HubConnectionExtensions.cs" />
     <Compile Include="IClientDispatch.cs" />
