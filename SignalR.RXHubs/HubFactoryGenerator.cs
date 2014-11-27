@@ -41,14 +41,8 @@ namespace SignalR.RXHubs
                 return retval;
             });
             return factory;
-//
-//            builder.Register(context =>
-//            {
-//                var implementedHub = context.Resolve(virtualHubLocal) as IHub;
-//                var retval = generator.CreateInterfaceProxyWithoutTarget(realHubInterfaceType, options, new ObservableInterceptor(implementedHub));
-//                return retval;
-//            }).As<IHub>().As(proxyType).ExternallyOwned();
         }
+
         private static Type GeneratePrivateHubTypeForInterface(ProxyGenerator generator, Type publicHubInterface)
         {
             TypeBuilder typeBuilder = generator.ProxyBuilder.ModuleScope.DefineType(false, publicHubInterface.Name, TypeAttributes.Public | TypeAttributes.Abstract | TypeAttributes.Interface);
@@ -80,7 +74,6 @@ namespace SignalR.RXHubs
         {
             public void Intercept(IInvocation invocation)
             {
-
             }
         }
     }

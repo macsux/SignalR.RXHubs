@@ -13,12 +13,13 @@ namespace SignalR.RXHubs
     public abstract class ObservableHub<T> : Hub<T>, IVirtualHub where T : class
     {
         private static readonly ConcurrentDictionary<Tuple<string, Guid>, IObservableDispatch> _subscriptions = new ConcurrentDictionary<Tuple<string, Guid>, IObservableDispatch>();
+
         private readonly Func<Guid, Action<ObservableNotification>, IDisposable, IObservableDispatch> _observableDispatchFactory;
         protected ObservableHub()
             : this(ServiceLocator.Current.GetInstance<Func<Guid, Action<ObservableNotification>, IDisposable, IObservableDispatch>>())
         {
-            
         }
+
         protected ObservableHub(Func<Guid, Action<ObservableNotification>, IDisposable, IObservableDispatch> observableDispatchFactory)
         {
             _observableDispatchFactory = observableDispatchFactory;

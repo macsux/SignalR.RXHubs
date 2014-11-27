@@ -8,7 +8,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR.Client;
-using Newtonsoft.Json.Linq;
 using SignalR.RXHubs.Core;
 
 namespace SignalR.RXHubs.Client
@@ -80,7 +79,7 @@ namespace SignalR.RXHubs.Client
 
                 // start listening to the common "on-next" stream for messages with our id, and deserialize them into expected format
 
-                var dispatch = new ClientDispatch<TMessage>(observableId, observer, this._transportObservable).DisposeWith(disposables);
+                var dispatch = new ClientDispatch<TMessage>(observableId, observer, _transportObservable).DisposeWith(disposables);
 
                 // wait until we're connected, then add subscription
                 newConnectionObservable.Subscribe(async _ =>
@@ -89,7 +88,7 @@ namespace SignalR.RXHubs.Client
                     subscriptionParameters.Insert(0, observableId);
                     try
                     {
-                        await this._hubProxy.Invoke(methodLocal, subscriptionParameters.ToArray());
+                        await _hubProxy.Invoke(methodLocal, subscriptionParameters.ToArray());
                     }
                     catch (Exception)
                     {
@@ -108,12 +107,12 @@ namespace SignalR.RXHubs.Client
                         disposables.Add(closedObservable.Subscribe(o => observer.OnCompleted()));
                         break;
                 }
-                this._subscriptions.TryAdd(observableId, dispatch);
+                _subscriptions.TryAdd(observableId, dispatch);
                 return async () =>
                 {
                     disposables.Dispose();
                     IClientDispatch temp;
-                    this._subscriptions.TryRemove(observableId, out temp);
+                    _subscriptions.TryRemove(observableId, out temp);
                     // only do explicit unsubscribe if we actually subscribed before and still connected
                     // server will do it's own cleanup
                     if (_connection.State == ConnectionState.Connected && observableId != Guid.Empty)
@@ -129,13 +128,13 @@ namespace SignalR.RXHubs.Client
             }).Publish().RefCount();
             return clientObservable;
         }
-        private async Task AddSubscription<TMessage>(Guid subscriptionId, Expression<Func<THub, IObservable<TMessage>>> serverSubscribeMethod)
+       /* private async Task AddSubscription<TMessage>(Guid subscriptionId, Expression<Func<THub, IObservable<TMessage>>> serverSubscribeMethod)
         {
             var actionDetails = serverSubscribeMethod.GetActionDetails();
             var subscriptionParameters = actionDetails.Parameters.ToList();
             subscriptionParameters.Insert(0, subscriptionId);
-            await this._hubProxy.Invoke(actionDetails.MethodName, subscriptionParameters.ToArray());
-        }
+            await _hubProxy.Invoke(actionDetails.MethodName, subscriptionParameters.ToArray());
+        }*/
 
         public void Dispose()
         {

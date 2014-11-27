@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -7,14 +6,14 @@ namespace SignalR.RXHubs.Core
 {
     public class ObservableNotification
     {
-        
         public ObservableNotification(Guid id, long msgNumber, ObservableComponent component, JToken payload)
         {
-            this.SubscriptionId = id;
+            SubscriptionId = id;
             MsgNumber = msgNumber;
             Component = component;
-            this.Message = payload;
+            Message = payload;
         }
+
         [JsonProperty("I")]
         public Guid SubscriptionId { get; set; }
         [JsonProperty("N")]

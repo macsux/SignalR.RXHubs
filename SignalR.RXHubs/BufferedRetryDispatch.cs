@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using SignalR.RXHubs.Core;
@@ -23,7 +22,6 @@ namespace SignalR.RXHubs
         public BufferedRetryDispatch(Guid observableId, Action<ObservableNotification> transportAction, IDisposable subscription) : 
             this(observableId,transportAction,subscription,null)
         {
-            
         }
 
         public BufferedRetryDispatch(Guid observableId, Action<ObservableNotification> transportAction, IDisposable subscription, IScheduler scheduler)
@@ -36,7 +34,6 @@ namespace SignalR.RXHubs
             var resendTimer = Observable.Interval(TimeSpan.FromSeconds(1), _scheduler)
                 .Do(_ =>
                 {
-//                    int bufferLength = 0;
                     foreach (var message in _messageBuffer)
                     {
                         if (message.Value.LastSentAttempt < _scheduler.Now.DateTime.AddSeconds(-5))
@@ -61,13 +58,11 @@ namespace SignalR.RXHubs
 
                             message.Value.LastSentAttempt = _scheduler.Now.DateTime;
                         }
-//                        bufferLength++;
                     }
                 })
                 .Subscribe();
             _subscription.Add(resendTimer);
         }
-
 
         public CompositeDisposable Subscription
         {
@@ -89,12 +84,11 @@ namespace SignalR.RXHubs
             var msgBuffer = new MessageBuffer(message) { LastSentAttempt = DateTime.Now };
             _messageBuffer.TryAdd(msgSequenceNo, msgBuffer);
             SendToTransport(msgSequenceNo, ObservableComponent.Next,  message);
-//            return msgSequenceNo;
         }
 
         public void SendToTransport(long sequenceNo, ObservableComponent component, object payload)
         {
-            var observableNotification = new ObservableNotification(this.ObservableId, sequenceNo, component, payload != null ? JToken.FromObject(payload) : null);
+            var observableNotification = new ObservableNotification(ObservableId, sequenceNo, component, payload != null ? JToken.FromObject(payload) : null);
             _transportAction(observableNotification);
         }
 
@@ -102,24 +96,24 @@ namespace SignalR.RXHubs
         {
             var sequenceTerminator = new Error( exception);
             AddSequenceTerminatorToBuffer(sequenceTerminator);
-            SendToTransport(this.NextCounter + 1, ObservableComponent.Error, sequenceTerminator);
+            SendToTransport(NextCounter + 1, ObservableComponent.Error, sequenceTerminator);
         }
 
         public void OnCompleted()
         {
             var sequenceTerminator = new SequenceEnd();
             AddSequenceTerminatorToBuffer(sequenceTerminator);
-            SendToTransport(this.NextCounter + 1, ObservableComponent.Complete, null);
+            SendToTransport(NextCounter + 1, ObservableComponent.Complete, null);
         }
 
         private void AddSequenceTerminatorToBuffer(SequenceEnd sequenceTerminator)
         {
             var msgBuffer = new MessageBuffer(sequenceTerminator) { LastSentAttempt = DateTime.Now };
             _messageBuffer.TryAdd(NextCounter + 1, msgBuffer);
-            _isComplete = true;
+            //_isComplete = true;
         }
 
-        private bool _isComplete = false;
+        //private bool _isComplete = false;
 
         public void Ack(int messageId)
         {
