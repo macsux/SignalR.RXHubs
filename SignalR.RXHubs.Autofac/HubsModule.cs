@@ -13,11 +13,10 @@ namespace SignalR.RXHubs.Autofac
     {
         private readonly Assembly[] _controllerAssemblies;
 
-        public HubsModule()
-            : this(new[] { Assembly.GetEntryAssembly() })
+        public HubsModule() : this(new[] { Assembly.GetEntryAssembly() })
         {
-            
         }
+
         public HubsModule(Assembly[] controllerAssemblies)
         {
             _controllerAssemblies = controllerAssemblies;

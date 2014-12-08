@@ -5,6 +5,5 @@ namespace SignalR.RXHubs.Core
     /// </summary>
     public interface IVirtualHub
     {
-
     }
 }

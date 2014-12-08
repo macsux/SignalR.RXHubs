@@ -33,10 +33,5 @@ namespace SignalR.RXHubs.Core
     [Serializable]
     public class SequenceEnd
     {
-//        public SequenceEnd(long totalMessages)
-//        {
-//            TotalMessages = totalMessages;
-//        }
-//        public long TotalMessages { get; private set; }
     }
 }

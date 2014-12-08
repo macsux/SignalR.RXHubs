@@ -33,7 +33,5 @@ namespace SignalR.RXHubs.Sample.Server
             app.UseCors(CorsOptions.AllowAll);
             app.MapSignalR(hubConfiguration);
         }
-
-        
     }
 }

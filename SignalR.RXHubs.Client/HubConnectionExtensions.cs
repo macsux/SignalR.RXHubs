@@ -11,7 +11,6 @@ namespace SignalR.RXHubs.Client
 {
     public static class HubConnectionExtensions
     {
-       
         public static IHubProxy GetHubProxy(this HubConnection hubConnection, string hubName)
         {
             FieldInfo field = hubConnection.GetType().GetField("_hubs", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -21,6 +20,7 @@ namespace SignalR.RXHubs.Client
 
             return dictionary.ContainsKey(hubName) ? dictionary[hubName] : null;
         }
+
         internal static ActionDetail GetActionDetails<TInput, TResult>(this Expression<Func<TInput, TResult>> action)
         {
 
@@ -35,6 +35,7 @@ namespace SignalR.RXHubs.Client
 
             return actionDetail;
         }
+
         private static object ConvertToConstant(Expression expression)
         {
             UnaryExpression objectMember = Expression.Convert(expression, typeof(object));
@@ -43,6 +44,7 @@ namespace SignalR.RXHubs.Client
 
             return getter();
         }
+
         internal class ActionDetail
         {
             public string MethodName { get; set; }

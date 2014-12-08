@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reactive.Disposables;
-using System.Runtime.CompilerServices;
 
 namespace SignalR.RXHubs.Core
 {
