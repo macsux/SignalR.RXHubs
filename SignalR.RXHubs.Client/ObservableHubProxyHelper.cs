@@ -41,7 +41,8 @@ namespace SignalR.RXHubs.Client
                 _hubProxy.Invoke(Strings.Ack, x.SubscriptionId, x.MsgNumber);
                 if (!_subscriptions.ContainsKey(x.SubscriptionId))
                 {
-                    _hubProxy.Invoke("Unsubscribe", observableId)
+                    // server is sending us observable we're not even listening too, something weird must have went down but going to unsubscribe
+                    _hubProxy.Invoke("Unsubscribe", x.SubscriptionId);
                 }
             }).DisposeWith(_disposable);
 

@@ -14,7 +14,7 @@ namespace SignalR.RXHubs.Sample.Client
             
 
 
-            Console.WriteLine("Two subscriptions are now pumping out messages");
+            Console.WriteLine("Press ENTER to start Two subscriptions pumping out messages");
             var sub1 = clientProxy.Proxy.GetClientMessageObservable().Subscribe(msg => Console.WriteLine("Sub1 {0} > {1}", msg.User, msg.Message), Console.WriteLine, () => Console.WriteLine("Sub1 Sequence ended"));
             var sub2 = clientProxy.Proxy.GetClientMessageObservable().Subscribe(msg => Console.WriteLine("Sub2 {0} > {1}", msg.User, msg.Message), Console.WriteLine, () => Console.WriteLine("Sub2 Sequence ended"));
             Console.ReadLine();
