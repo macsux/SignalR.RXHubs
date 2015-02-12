@@ -14,12 +14,7 @@ namespace SignalR.RXHubs.Sample.Server
         {
             var containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterModule<HubsModule>();
-            containerBuilder.Register(c =>
-            {
-                var context = c.Resolve<IComponentContext>();
-                var genericContainer = new AutofacServiceLocator(context);
-                return genericContainer;
-            }).As<IServiceLocator>().SingleInstance();
+            
             var container = containerBuilder.Build();
             var csl = new AutofacServiceLocator(container);
             ServiceLocator.SetLocatorProvider(() => csl);

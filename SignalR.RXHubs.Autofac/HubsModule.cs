@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Autofac;
+using Autofac.Extras.CommonServiceLocator;
 using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.Practices.ServiceLocation;
 using SignalR.RXHubs.Core;
@@ -46,6 +47,13 @@ namespace SignalR.RXHubs.Autofac
                     .As(realHubFactory.HubType)
                     .ExternallyOwned();
             }
+
+            builder.Register(c =>
+            {
+                var context = c.Resolve<IComponentContext>();
+                var genericContainer = new AutofacServiceLocator(context);
+                return genericContainer;
+            }).As<IServiceLocator>().SingleInstance();
         }
     }
 }

@@ -24,12 +24,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR.RXHubs.Client", "Si
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{05CE678A-72F6-479C-9577-18C57CA25361}"
 	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR.RXHubs.Autofac", "SignalR.RXHubs.Autofac\SignalR.RXHubs.Autofac.csproj", "{2F3B7607-0C8D-41A5-8E42-4AF0C522BB15}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalR.RXHubs.Tests", "SignalR.RXHubs.Tests\SignalR.RXHubs.Tests.csproj", "{D44C2F4F-C2F6-4143-BC23-EE7DC8BAA702}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuspec", "Nuspec", "{C553FD75-1F4B-4AD5-82E1-2C1FDB1ECB2F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SignalR.RXHubs.Core", "SignalR.RXHubs.Core", "{4E730238-E15B-49EF-8AEB-A12BACFF7B79}"
+	ProjectSection(SolutionItems) = preProject
+		SignalR.RXHubs.Core.nuspec = SignalR.RXHubs.Core.nuspec
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,5 +84,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4E730238-E15B-49EF-8AEB-A12BACFF7B79} = {C553FD75-1F4B-4AD5-82E1-2C1FDB1ECB2F}
 	EndGlobalSection
 EndGlobal

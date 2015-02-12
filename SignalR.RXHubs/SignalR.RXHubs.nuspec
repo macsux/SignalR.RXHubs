@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Andrew Stakhov</authors>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.txt</licenseUrl>
+    <projectUrl>https://github.com/macsux/SignalR.RXHubs</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Hubs library for SignalR.Reactive project. Allows creating SignalR hubs that return IObservable</description>
+    <copyright>Copyright 2015 Andrew Stakhov</copyright>
+    <tags>SignalR Reactive</tags>
+  </metadata>
+</package>
